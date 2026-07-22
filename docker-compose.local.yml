@@ -1,0 +1,30 @@
+﻿services:
+  mysql:
+    ports: !override
+      - "127.0.0.1:13306:3306"
+  redis:
+    ports: !override
+      - "127.0.0.1:16379:6379"
+  backend-web:
+    ports: !override
+      - "127.0.0.1:18089:8089"
+    volumes:
+      - "C:/Users/22705/Documents/Codex/2026-07-22/ctf-api/work/reqable-ca.crt:/usr/local/share/ca-certificates/reqable.crt:ro"
+    command: ["sh", "-c", "update-ca-certificates && exec python backend-web/main.py"]
+  websocket:
+    ports: !override
+      - "127.0.0.1:18090:8090"
+    volumes:
+      - "C:/Users/22705/Documents/Codex/2026-07-22/ctf-api/work/reqable-ca.crt:/usr/local/share/ca-certificates/reqable.crt:ro"
+    command: ["sh", "-c", "update-ca-certificates && exec python websocket/main.py"]
+  scheduler:
+    ports: !override
+      - "127.0.0.1:18091:8091"
+    volumes:
+      - "C:/Users/22705/Documents/Codex/2026-07-22/ctf-api/work/reqable-ca.crt:/usr/local/share/ca-certificates/reqable.crt:ro"
+    command: ["sh", "-c", "update-ca-certificates && exec python scheduler/main.py"]
+  frontend:
+    ports: !override
+      - "127.0.0.1:19000:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:80 || exit 1"]
