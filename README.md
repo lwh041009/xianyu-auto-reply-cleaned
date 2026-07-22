@@ -100,6 +100,7 @@ xianyu-auto-reply/
 ├── docker/frontend/      # 前端 Dockerfile 与 Nginx 配置
 ├── docker-compose.yml    # 本地源码构建编排
 ├── deploy.sh             # 一键部署脚本（自动生成远程镜像版 compose）
+├── deploy_server.sh      # 服务器源码一键部署脚本（自动安装 Docker）
 ├── deploy_remote.sh      # 远程 MySQL/Redis 一键部署脚本（自动生成 docker-compose.remote.yml）
 ├── update.sh             # 一键更新脚本（拉取最新远程镜像）
 ├── build.sh              # 本地源码全量构建脚本
@@ -136,6 +137,31 @@ xianyu-auto-reply/
 - Docker 依赖链：mysql/redis → backend-web → websocket → scheduler；frontend → backend-web
 
 ## 快速开始
+
+### 服务器源码部署（中国大陆服务器推荐）
+
+服务器无法访问 GitHub 时，可先在本地上传完整源码目录到服务器，再执行：
+
+```bash
+cd /opt/xianyu-auto-reply-cleaned
+sudo bash deploy_server.sh
+```
+
+`deploy_server.sh` 会自动安装 Docker/Compose、生成随机数据库密码，并使用当前源码构建服务。
+首次启动会将 `AUTO_START_WEBSOCKET` 和 `AUTO_START_CRAWL_JOBS` 设为 `false`，请先完成扫码登录和滑块验证，确认账号显示 `connected/running` 后编辑 `.env`：
+
+```env
+AUTO_START_WEBSOCKET=true
+AUTO_START_CRAWL_JOBS=true
+```
+
+然后启动现有容器：
+
+```bash
+sudo bash build.sh start
+```
+
+部署时不要上传本机 `.env.local`、管理员凭据或 Reqable 证书。
 
 ### 方式一：服务器一键部署（推荐）
 
